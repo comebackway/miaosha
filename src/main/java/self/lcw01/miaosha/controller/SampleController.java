@@ -6,6 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import self.lcw01.miaosha.entity.User;
+import self.lcw01.miaosha.redis.RedisService;
+import self.lcw01.miaosha.redis.UserKey;
 import self.lcw01.miaosha.result.Result;
 import self.lcw01.miaosha.service.UserService;
 
@@ -21,6 +23,8 @@ public class SampleController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    RedisService redisService;
 
     @RequestMapping("/db/get")
     @ResponseBody
@@ -32,5 +36,37 @@ public class SampleController {
     public Result<Boolean> tx(){
         userService.tx();
         return Result.success(true);
+    }
+
+    /*
+    @RequestMapping("/redis/set")
+    @ResponseBody
+    public Result<Boolean> reidsset(){
+        boolean v1 = redisService.set("key2","wawawa");
+        return Result.success(v1);
+    }
+
+    @RequestMapping("/redis/get")
+    @ResponseBody
+    public Result<String> reidsget(){
+        String v1 = redisService.get("key2",String.class);
+        return Result.success(v1);
+    }
+    */
+    @RequestMapping("/redis/get")
+    @ResponseBody
+    public Result<User> reidsget(){
+        User v1 = redisService.get(UserKey.getById,""+3,User.class);
+        return Result.success(v1);
+    }
+
+    @RequestMapping("/redis/set")
+    @ResponseBody
+    public Result<Boolean> reidsset(){
+        User user = new User();
+        user.setId(3);
+        user.setName("333");
+        boolean v1 = redisService.set(UserKey.getById,""+3,user);
+        return Result.success(v1);
     }
 }
