@@ -1,5 +1,10 @@
 package self.lcw01.miaosha.entity;
 
+import org.hibernate.validator.constraints.Length;
+import self.lcw01.miaosha.validator.IsMobile;
+
+import javax.validation.constraints.NotNull;
+
 public class User {
     private Long id;
     private String name;

@@ -13,6 +13,8 @@ import self.lcw01.miaosha.service.UserService;
 import self.lcw01.miaosha.util.ValidatorUtil;
 import self.lcw01.miaosha.vo.LoginVo;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/login")
 public class LoginController {
@@ -29,8 +31,10 @@ public class LoginController {
 
     @RequestMapping("/do_login")
     @ResponseBody
-    public Result<Boolean> doLogin(LoginVo loginVo){
+    //@Valid注解作用：该参数需要符合jsr303参数校验规则
+    public Result<Boolean> doLogin(@Valid LoginVo loginVo){
         //参数校验
+        /*
         String passInput = loginVo.getPassword();
         String mobile = loginVo.getMobile();
         if (StringUtils.isEmpty(passInput)){
@@ -42,11 +46,8 @@ public class LoginController {
         if (!ValidatorUtil.isMobile(mobile)){
             return Result.error(CodeMsg.MOBILE_ERROR);
         }
-        CodeMsg codeMsg = userService.login(loginVo);
-        if (codeMsg.getCode() == 0){
-            return Result.success(true);
-        }else {
-            return Result.error(codeMsg);
-        }
+        */
+        userService.login(loginVo);
+        return Result.success(true);
     }
 }
