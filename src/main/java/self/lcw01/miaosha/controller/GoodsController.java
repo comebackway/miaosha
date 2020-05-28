@@ -17,6 +17,10 @@ public class GoodsController {
     @Autowired
     UserService userService;
 
+    /*
+    版本一：调用了@CookieValue和@RequestParam注解
+     */
+    /*
     @RequestMapping("/to_list")
     public String toLogin(Model model,
                           //取cookie中值为token的内容,非必须内容,可以为空
@@ -30,6 +34,17 @@ public class GoodsController {
         //优先取参数中的token
         String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
         User user = userService.getByToken(token);
+        model.addAttribute("user",user);
+        return "goods_list";
+    }
+    */
+
+
+    /*
+    版本二：使用自定义config
+     */
+    @RequestMapping("/to_list")
+    public String toLogin(Model model,User user){
         model.addAttribute("user",user);
         return "goods_list";
     }
