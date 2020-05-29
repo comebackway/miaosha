@@ -65,15 +65,15 @@ public class UserService {
         }
 
         if(user != null) {
-            AddCookie(response, user);
+            //生成唯一的token，作为每个登录用户的标识
+            String token = UUIDUtil.uuid();
+            AddCookie(response, token,user);
         }
         return user;
     }
 
     //每次调用该方法都会重新设置一个新的token，然后刷新缓存，redis的生成时间重新设置
-    private void AddCookie(HttpServletResponse response, User user) {
-        //生成唯一的token，作为每个登录用户的标识
-        String token = UUIDUtil.uuid();
+    private void AddCookie(HttpServletResponse response, String token,User user) {
         //将token和用户信息user作为键值对存在redis中
         redisService.set(UserKey.token,token,user);
         Cookie cookie = new Cookie(COOKIE_NAME_TOKEN,token);
@@ -84,10 +84,15 @@ public class UserService {
     }
 
     //从redis中取出user
-    public User getByToken(String token){
+    public User getByToken(HttpServletResponse response,String token){
         if (StringUtils.isEmpty(token)){
             return null;
         }
-        return redisService.get(UserKey.token,token,User.class);
+        User user = redisService.get(UserKey.token,token,User.class);
+        //延长有效期
+        if (user != null){
+            AddCookie(response,token,user);
+        }
+        return user;
     }
 }

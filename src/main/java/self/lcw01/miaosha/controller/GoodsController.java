@@ -7,8 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import self.lcw01.miaosha.dto.GoodsDto;
 import self.lcw01.miaosha.entity.User;
+import self.lcw01.miaosha.service.GoodsService;
 import self.lcw01.miaosha.service.UserService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/goods")
@@ -16,6 +20,10 @@ public class GoodsController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    GoodsService goodsService;
+
 
     /*
     版本一：调用了@CookieValue和@RequestParam注解
@@ -44,8 +52,11 @@ public class GoodsController {
     版本二：使用自定义config
      */
     @RequestMapping("/to_list")
-    public String toLogin(Model model,User user){
+    public String list(Model model,User user){
         model.addAttribute("user",user);
+
+        List<GoodsDto> goodsDtoList = goodsService.listGoodsDto();
+        model.addAttribute("goodsList",goodsDtoList);
         return "goods_list";
     }
 }
