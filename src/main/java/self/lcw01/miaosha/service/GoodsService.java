@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import self.lcw01.miaosha.dao.GoodsDao;
 import self.lcw01.miaosha.dto.GoodsDto;
+import self.lcw01.miaosha.entity.MiaoShaGoods;
 
 import java.util.List;
 
@@ -15,5 +16,13 @@ public class GoodsService {
 
     public List<GoodsDto> listGoodsDto(){
         return goodsDao.listGoodsDtoList();
+    }
+
+    public GoodsDto getGoodsDtoByGoodsId(long id){return goodsDao.getGoodsDtoByGoodsId(id);}
+
+    public void reduceStock(GoodsDto goodsDto) {
+        MiaoShaGoods g = new MiaoShaGoods();
+        g.setGoodsId(goodsDto.getId());
+        goodsDao.reduceStock(g);
     }
 }

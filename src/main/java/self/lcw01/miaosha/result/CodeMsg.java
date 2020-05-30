@@ -20,7 +20,8 @@ public class CodeMsg {
 	//订单模块 5004XX
 	
 	//秒杀模块 5005XX
-	
+	public static CodeMsg MIAOSHA_OVER = new CodeMsg(500501,"库存不足");
+	public static CodeMsg MIAOSHA_REPEATE = new CodeMsg(500502,"不能重复秒杀");
 	
 	private CodeMsg(int code, String msg) {
 		this.code = code;
