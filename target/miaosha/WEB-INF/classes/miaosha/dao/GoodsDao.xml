@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http:mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间绑定dao接口，这样就可以不用写接口实现类，mybatis会通过该绑定自动执行对应的sql语句-->
+<mapper namespace="self.lcw01.miaosha.dao.GoodsDao">
+    <select id="listGoodsDtoList" resultType="GoodsDto">
+        select g.*,mg.stock_count, mg.start_date,mg.end_date,mg.miaosha_price
+        from miaosha_goods mg left join goods g on mg.goods_id = g.id
+    </select>
+
+    <select id="getGoodsDtoByGoodsId" resultType="GoodsDto">
+        select g.*,mg.stock_count, mg.start_date,mg.end_date,mg.miaosha_price
+        from miaosha_goods mg left join goods g on mg.goods_id = g.id where mg.goods_id=#{goodsId}
+    </select>
+
+    <update id="reduceStock" parameterType="MiaoShaGoods">
+        update miaosha_goods set stock_count = stock_count-1 where goods_id=#{goodsId}
+    </update>
+</mapper>

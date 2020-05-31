@@ -47,6 +47,7 @@ public class UserService {
         return true;
     }
 
+    /*
     public User login(HttpServletResponse response,LoginVo loginVo){
         if (loginVo == null){
             throw new GlobalException(CodeMsg.SERVER_ERROR);
@@ -70,6 +71,33 @@ public class UserService {
             AddCookie(response, token,user);
         }
         return user;
+    }
+    */
+
+    public String login(HttpServletResponse response,LoginVo loginVo){
+        if (loginVo == null){
+            throw new GlobalException(CodeMsg.SERVER_ERROR);
+        }
+        String mobile = loginVo.getMobile();
+        String password = loginVo.getPassword();
+        User user = userDao.getById(Long.parseLong(mobile));
+        if (user == null){
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        String dbPass = user.getPassword();
+        String dbSalt = user.getSalt();
+        String calcPass = MD5Util.formPassToDBPass(password,dbSalt);
+        if (!calcPass.equals(dbPass)){
+            throw new GlobalException(CodeMsg.PASSWORD_ERROR);
+        }
+
+        if(user != null) {
+            //生成唯一的token，作为每个登录用户的标识
+            String token = UUIDUtil.uuid();
+            AddCookie(response, token,user);
+            return token;
+        }
+        return null;
     }
 
     //每次调用该方法都会重新设置一个新的token，然后刷新缓存，redis的生成时间重新设置

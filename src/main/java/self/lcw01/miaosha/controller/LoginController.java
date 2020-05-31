@@ -33,7 +33,7 @@ public class LoginController {
     @RequestMapping("/do_login")
     @ResponseBody
     //@Valid注解作用：该参数需要符合jsr303参数校验规则
-    public Result<Boolean> doLogin(HttpServletResponse response, @Valid LoginVo loginVo){
+    public Result<String> doLogin(HttpServletResponse response, @Valid LoginVo loginVo){
         //参数校验
         /*
         String passInput = loginVo.getPassword();
@@ -48,7 +48,7 @@ public class LoginController {
             return Result.error(CodeMsg.MOBILE_ERROR);
         }
         */
-        userService.login(response,loginVo);
-        return Result.success(true);
+        String token = userService.login(response,loginVo);
+        return Result.success(token);
     }
 }
