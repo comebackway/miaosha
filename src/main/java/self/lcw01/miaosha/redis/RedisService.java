@@ -134,6 +134,27 @@ public class RedisService {
         }
     }
 
+    /**
+     * 删除key
+     * @param prefix
+     * @param key
+     * @return
+     */
+    public boolean del(KeyPrefix prefix,String key){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realkey = prefix.getPrefix() + key;
+            long ret = jedis.del(realkey);
+            return ret>0;
+        }finally {
+            if (jedis != null){
+                jedis.close();
+            }
+        }
+    }
+
+
     //当对象为空或者对象的类型为数字类型会转换失败,所以要特殊处理
     private <T> String beanToString(T value) {
         if (value == null){

@@ -11,4 +11,8 @@
     <insert id="insert" parameterType="User">
         insert into User(id,name) values(#{id},#{name})
     </insert>
+
+    <update id="update" parameterType="User">
+        update User set password=#{password} where id = #{id}
+    </update>
 </mapper>

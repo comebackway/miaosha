@@ -123,4 +123,36 @@ public class UserService {
         }
         return user;
     }
+
+    public User getById(long id){
+        //取缓存
+        User user = redisService.get(UserKey.getById,""+id,User.class);
+        if (user != null){
+            return user;
+        }
+        //取数据库
+        user = userDao.getById(id);
+        if (user != null){
+            redisService.set(UserKey.getById,""+id,user);
+        }
+        return user;
+    }
+
+    public boolean updatePassword(String token,long id,String formPassNew){
+        User user = getById(id);
+        if (user == null){
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        User usernew = new User();
+        usernew.setId(id);
+        usernew.setPassword(MD5Util.formPassToDBPass(formPassNew,user.getSalt()));
+        userDao.update(usernew);
+        //处理缓存
+        //删掉先前用户信息
+        redisService.del(UserKey.getById,""+id);
+        //更新token对应的user
+        user.setPassword(usernew.getPassword());
+        redisService.set(UserKey.token,token,user);
+        return true;
+    }
 }

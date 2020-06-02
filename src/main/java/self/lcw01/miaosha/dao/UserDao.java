@@ -9,4 +9,6 @@ public interface UserDao {
     public User getById(@Param("id") long id);
 
     public int insert(User user);
+
+    public void update(User usernew);
 }

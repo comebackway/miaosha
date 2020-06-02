@@ -49,8 +49,8 @@ public class UserUtil {
 //		pstmt.close();
 //		conn.close();
 //		System.out.println("insert to db");
-		//登录，生成token
-		String urlString = "http://47.92.87.188:8080/miaosha/login/do_login?";
+//		//登录，生成token
+		String urlString = "http://120.78.179.101:8080/miaosha/login/do_login?";
 		File file = new File("D:/tokens.txt");
 		if(file.exists()) {
 			file.delete();
