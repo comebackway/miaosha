@@ -41,7 +41,8 @@ CREATE TABLE `miaosha`.`miaosha_order`  (
   `user_id` bigint(20) COMMENT '用户id',
   `goods_id` bigint(20) COMMENT '商品id',
   `order_id` bigint(20) COMMENT '订单id',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `u_uid_gid` (`user_id`,`goods_id`)
 )ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 
@@ -58,4 +59,7 @@ INSERT INTO `miaosha`.`goods`(`id`, `goods_name`, `goods_title`, `goods_img`, `g
 INSERT INTO `miaosha`.`goods`(`id`, `goods_name`, `goods_title`, `goods_img`, `gooos_detail`, `goods_price`, `goods_stock`) VALUES (2, 'iphone11', 'iphone11', '/img/iphone11.jpg', '水果水果好垃圾', 1.00, 100);
 INSERT INTO `miaosha`.`miaosha_goods`(`id`, `goods_id`, `miaosha_price`, `stock_count`, `start_date`, `end_date`) VALUES (1, 1, 100.00, 10, '2020-05-21 16:28:39', '2020-06-27 16:28:43');
 INSERT INTO `miaosha`.`miaosha_goods`(`id`, `goods_id`, `miaosha_price`, `stock_count`, `start_date`, `end_date`) VALUES (2, 2, 1.00, 10, '2020-05-31 16:28:56', '2020-06-26 16:28:59');
+INSERT INTO `miaosha`.`User`(`id`, `name`, `password`, `salt`) VALUES (12345678901, 'haha', '1f81aca08c49b0dad8d9c04ec4eb0004', '1a2b3c4d');
+
+
 

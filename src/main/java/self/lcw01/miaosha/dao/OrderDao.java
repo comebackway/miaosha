@@ -12,4 +12,6 @@ public interface OrderDao {
     public long insertOrderInfo(OrderInfo orderInfo);
 
     public int insertMiaoShaOrder(MiaoshaOrder miaoshaOrder);
+
+    public OrderInfo getOrderById(long orderId);
 }

@@ -15,10 +15,13 @@ public class CodeMsg {
 	public static CodeMsg PASSWORD_EMPTY = new CodeMsg(500203,"密码不能为空");
 	public static CodeMsg MOBILE_EMPTY = new CodeMsg(500204,"手机号不能为空");
 	public static CodeMsg MOBILE_ERROR = new CodeMsg(500205,"手机号格式错误");
+	public static CodeMsg SESSION_ERROR = new CodeMsg(500201,"用户Session失效");
 	//商品模块 5003XX
 	
 	//订单模块 5004XX
-	
+	public static CodeMsg ORDER_NULL = new CodeMsg(500401,"订单不存在");
+
+
 	//秒杀模块 5005XX
 	public static CodeMsg MIAOSHA_OVER = new CodeMsg(500501,"库存不足");
 	public static CodeMsg MIAOSHA_REPEATE = new CodeMsg(500502,"不能重复秒杀");

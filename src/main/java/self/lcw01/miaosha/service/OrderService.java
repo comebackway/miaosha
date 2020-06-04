@@ -8,6 +8,8 @@ import self.lcw01.miaosha.dto.GoodsDto;
 import self.lcw01.miaosha.entity.MiaoshaOrder;
 import self.lcw01.miaosha.entity.OrderInfo;
 import self.lcw01.miaosha.entity.User;
+import self.lcw01.miaosha.redis.OrderKey;
+import self.lcw01.miaosha.redis.RedisService;
 
 import java.util.Date;
 
@@ -17,8 +19,12 @@ public class OrderService {
     @Autowired
     OrderDao orderDao;
 
+    @Autowired
+    RedisService redisService;
+
     public MiaoshaOrder getMiaoshaOrderByUserIdAndGoodsId(long userId,long goodsId){
-        return orderDao.getMiaoshaOrderByUserIdAndGoodsId(userId,goodsId);
+        //return orderDao.getMiaoshaOrderByUserIdAndGoodsId(userId,goodsId);
+        return redisService.get(OrderKey.getMiaoshaOrderByUidGid,""+userId+"_"+goodsId,MiaoshaOrder.class);
     }
 
     @Transactional
@@ -41,7 +47,11 @@ public class OrderService {
         miaoshaOrder.setUserId(user.getId());
 
         orderDao.insertMiaoShaOrder(miaoshaOrder);
-
+        redisService.get(OrderKey.getMiaoshaOrderByUidGid,""+user.getId()+"_"+goodsDto.getId(),MiaoshaOrder.class);
         return orderInfo;
+    }
+
+    public OrderInfo getOrderById(long orderId) {
+        return orderDao.getOrderById(orderId);
     }
 }

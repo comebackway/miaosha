@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import self.lcw01.miaosha.entity.User;
+import self.lcw01.miaosha.rabbitmq.MQSender;
 import self.lcw01.miaosha.redis.RedisService;
 import self.lcw01.miaosha.redis.UserKey;
 import self.lcw01.miaosha.result.Result;
@@ -68,5 +69,15 @@ public class SampleController {
         user.setName("333");
         boolean v1 = redisService.set(UserKey.getById,""+3,user);
         return Result.success(v1);
+    }
+
+    @Autowired
+    MQSender mqSender;
+
+    @RequestMapping("/mqsend")
+    @ResponseBody
+    public Result<String> mqsend(){
+        mqSender.send("hello");
+        return Result.success("hello");
     }
 }
