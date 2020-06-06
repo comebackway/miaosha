@@ -80,4 +80,25 @@ public class SampleController {
         mqSender.send("hello");
         return Result.success("hello");
     }
+
+    @RequestMapping("/mqsendtopic")
+    @ResponseBody
+    public Result<String> mqsendtopic(){
+        mqSender.sendTopic("hello");
+        return Result.success("hello");
+    }
+
+    @RequestMapping("/mqsendfanout")
+    @ResponseBody
+    public Result<String> mqsendfanout(){
+        mqSender.sendFanout("hello");
+        return Result.success("hello");
+    }
+
+    @RequestMapping("/mqsendheaders")
+    @ResponseBody
+    public Result<String> mqsendheaders(){
+        mqSender.sendHeaders("hello11");
+        return Result.success("hello");
+    }
 }
