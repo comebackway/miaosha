@@ -41,7 +41,7 @@
                 <td th:text="${goods.stockCount}"></td>
                 <!--使用htm后缀是因为 application里定义了前缀路径和后缀是.html
                     为了让其能找到static里边的页面，所以要设置.htm-->
-                <td><a th:href="'/goods_detail.htm?goodsId='+${goods.id}">详情</a> </td>
+                <td><a th:href="'/miaosha/goods_detail.htm?goodsId='+${goods.id}">详情</a> </td>
             </tr>
         </table>
     </div>

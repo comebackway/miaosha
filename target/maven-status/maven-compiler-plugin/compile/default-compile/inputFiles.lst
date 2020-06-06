@@ -20,6 +20,7 @@ D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\entity\MiaoShaGoods.java
 D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\util\ValidatorUtil.java
 D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\config\WebConfig.java
 D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\dto\GoodsDto.java
+D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\rabbitmq\MQMiaoshaMessage.java
 D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\service\UserService.java
 D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\util\UUIDUtil.java
 D:\JavaProject\miaosha\src\main\java\self\lcw01\miaosha\service\GoodsService.java

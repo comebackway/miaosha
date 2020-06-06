@@ -4,19 +4,19 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <title>订单详情</title>
     <!-- jquery -->
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/miaosha/js/jquery.min.js"></script>
     <!-- bootstrap -->
-    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/miaosha/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/miaosha/bootstrap/js/bootstrap.min.js"></script>
     <!-- jquery-validator -->
-    <script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
+    <script type="text/javascript" src="/miaosha/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/miaosha/jquery-validation/localization/messages_zh.min.js"></script>
     <!-- layer -->
-    <script type="text/javascript" src="/layer/layer.js"></script>
+    <script type="text/javascript" src="/miaosha/layer/layer.js"></script>
     <!-- md5.js -->
-    <script type="text/javascript" src="/js/md5.min.js"></script>
+    <script type="text/javascript" src="/miaosha/js/md5.min.js"></script>
     <!-- common.js -->
-    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/miaosha/js/common.js"></script>
 </head>
 <p text="${orderInfo.goodsId"></p>
 <body>
@@ -65,7 +65,7 @@ $(function () {
     function getOrderDetail() {
         var orderId = g_getQueryString("orderId");
         $.ajax({
-            url:"/order/detail",
+            url: "/" + window.location.pathname.split("/")[1] + "/order/detail",
             type:"GET",
             data:{
                 orderId: orderId,
@@ -87,7 +87,7 @@ $(function () {
         var goods = orderdetail.goodsDto;
         var order = orderdetail.orderInfo;
         $("#goodsName").text(goods.goodsName);
-        $("#goodsImg").attr("src",goods.goodsImg);
+        $("#goodsImg").attr("src","/" + window.location.pathname.split("/")[1] + goods.goodsImg);
         $("#orderPrice").text(order.goodsPrice);
         $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
         var status = "";

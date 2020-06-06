@@ -71,6 +71,10 @@ public class SampleController {
         return Result.success(v1);
     }
 
+    /*
+
+    队列四个方法的基本测试方法
+
     @Autowired
     MQSender mqSender;
 
@@ -101,4 +105,6 @@ public class SampleController {
         mqSender.sendHeaders("hello11");
         return Result.success("hello");
     }
+
+     */
 }

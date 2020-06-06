@@ -156,7 +156,7 @@ public class RedisService {
 
 
     //当对象为空或者对象的类型为数字类型会转换失败,所以要特殊处理
-    private <T> String beanToString(T value) {
+    public static <T> String beanToString(T value) {
         if (value == null){
             return null;
         }
@@ -172,7 +172,7 @@ public class RedisService {
         }
     }
 
-    private <T> T stringToBean(String str,Class<T> clazz) {
+    public static <T> T stringToBean(String str,Class<T> clazz) {
         if (str == null || str.length() <= 0 || clazz == null){
             return null;
         }

@@ -28,6 +28,20 @@ public class MQConfig {
     //这里的# 表示匹配所有
     public static final String ROUTING_KEY2 = "topic.#";
 
+
+    public static final String MIAOSHA_QUEUE = "queue_1";
+
+
+    @Bean
+    public Queue miaoshaqueue(){
+        //返回一个名称是queue的队列
+        return new Queue(MIAOSHA_QUEUE,true);
+    }
+
+
+
+
+
     /**
      * Direct模式 交换机Exchange（使用了默认的交换机）
      * @return

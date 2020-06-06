@@ -7,6 +7,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import self.lcw01.miaosha.redis.RedisService;
 
 @Service
 public class MQSender {
@@ -16,6 +17,10 @@ public class MQSender {
     //操作队列的封装类,里边实现了各种方法
     @Autowired
     AmqpTemplate amqpTemplate;
+
+    /*
+
+        以下四种基础方法是测试用
 
     public void send(Object message){
         logger.info("send message");
@@ -45,5 +50,18 @@ public class MQSender {
         //参数二：MessageProperties对象 以标明这消息的参数，以便交换机作为条件where匹配
         Message obj = new Message(message.toString().getBytes(),messageProperties);
         amqpTemplate.convertAndSend(MQConfig.Headers_EXCHANGE,"",obj);
+    }
+
+    */
+
+
+    /**
+     * 真正的业务方法
+     */
+    public void sendMiaoshaMessage(MQMiaoshaMessage mqMiaoshaMessage) {
+        //这里是借用了redis的beantostring方法而已，不是真的要操作redis
+        String msg = RedisService.beanToString(mqMiaoshaMessage);
+        logger.info("send message：" + msg);
+        amqpTemplate.convertAndSend(MQConfig.MIAOSHA_QUEUE,msg);
     }
 }
