@@ -8,6 +8,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import self.lcw01.miaosha.ThreadLocalContext.UserContext;
 import self.lcw01.miaosha.entity.User;
 import self.lcw01.miaosha.service.UserService;
 
@@ -30,6 +31,20 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public User resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+
+        /*
+
+        V2.0 在拦截器中使用ThreadLocal保存了参数，在后执行的这里可以直接获得并返回给controller
+
+         */
+        return UserContext.getUserThreadLocal();
+
+
+
+        /*
+
+        V1.0版本 直接在参数处理器HandlerMethodArgumentResolver中处理参数
+
         //从nativeWebRequest中取得request和response并转换为http类型
         HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
@@ -41,7 +56,11 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         //优先取参数中的token
         String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
         return userService.getByToken(response,token);
+
+         */
     }
+
+    /*
 
     private String getCookieValue(HttpServletRequest request,String cookieName){
         //取出所有的cookie做循环
@@ -56,4 +75,6 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         }
         return null;
     }
+
+     */
 }

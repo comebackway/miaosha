@@ -3,7 +3,9 @@ package self.lcw01.miaosha.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import self.lcw01.miaosha.Interceptor.AccessLimitInterceptor;
 
 import java.util.List;
 
@@ -15,9 +17,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired
     UserArgumentResolver userArgumentResolver;
 
+    @Autowired
+    AccessLimitInterceptor accessLimitInterceptor;
+
     //该方法的作用是给controller的参数赋值
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(userArgumentResolver);
+    }
+
+    //将拦截器注册进来
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(accessLimitInterceptor);
     }
 }

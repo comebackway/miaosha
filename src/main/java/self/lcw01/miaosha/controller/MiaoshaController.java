@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import self.lcw01.miaosha.access.AccessLimit;
 import self.lcw01.miaosha.dto.GoodsDto;
 import self.lcw01.miaosha.entity.MiaoshaOrder;
 import self.lcw01.miaosha.entity.OrderInfo;
@@ -23,6 +24,7 @@ import self.lcw01.miaosha.util.MD5Util;
 import self.lcw01.miaosha.util.UUIDUtil;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
@@ -170,13 +172,36 @@ public class MiaoshaController implements InitializingBean {
      * @param goodsId
      * @return
      */
+    @AccessLimit(seconds = 60,maxCount = 10,needLogin = true) //该注解是自定义注解
     @RequestMapping(value = "/getpath",method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> getPath(Model model, User user,@RequestParam("goodsId") long goodsId,
-                                  @RequestParam("verifyCode") int verifyCode){
-        if (user == null) {
+    public Result<String> getPath(HttpServletRequest request,Model model, User user, @RequestParam("goodsId") long goodsId,
+                                  @RequestParam("verifyCode") Integer verifyCode){
+        if (user == null || verifyCode == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+
+        /*
+
+        V1.0 在业务方法里边添加控制  目前使用V2.0 使用拦截器拦截每一个url并对相应url做个性化参数配置
+
+        //这里做限流的控制
+        //获取访问次数做判断
+        Integer accessnum = redisService.get(MiaoshaKey.accessNum,""+user.getId()+"_"+request.getRequestURL(),Integer.class);
+        if(accessnum == null){
+            //如果是第一次访问
+            redisService.set(MiaoshaKey.accessNum,""+user.getId()+"_"+request.getRequestURL(),1);
+        }else if (accessnum < 5){
+            //少于访问次数限制
+            redisService.incr(MiaoshaKey.accessNum,""+user.getId()+"_"+request.getRequestURL());
+        }else{
+            return Result.error(CodeMsg.ACCESS_LIMIT);
+        }
+
+
+         */
+
+
         //验证验证码
         boolean check = miaoshaService.checkVerifyCode(user,goodsId,verifyCode);
         if (!check){
