@@ -4,10 +4,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import self.lcw01.miaosha.dto.GoodsDto;
 import self.lcw01.miaosha.entity.MiaoshaOrder;
 import self.lcw01.miaosha.entity.OrderInfo;
@@ -15,13 +12,22 @@ import self.lcw01.miaosha.entity.User;
 import self.lcw01.miaosha.rabbitmq.MQMiaoshaMessage;
 import self.lcw01.miaosha.rabbitmq.MQSender;
 import self.lcw01.miaosha.redis.GoodsKey;
+import self.lcw01.miaosha.redis.MiaoshaKey;
 import self.lcw01.miaosha.redis.RedisService;
 import self.lcw01.miaosha.result.CodeMsg;
 import self.lcw01.miaosha.result.Result;
 import self.lcw01.miaosha.service.GoodsService;
 import self.lcw01.miaosha.service.MiaoshaService;
 import self.lcw01.miaosha.service.OrderService;
+import self.lcw01.miaosha.util.MD5Util;
+import self.lcw01.miaosha.util.UUIDUtil;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +76,26 @@ public class MiaoshaController implements InitializingBean {
     GET是幂等的，也就是不会对服务端数据有影响 比如只是查询
     POST是对服务端数据有影响的 比如新增修改删除
      */
-    @RequestMapping(value = "/do_miaosha",method = RequestMethod.POST)
+    /*
+    V3.0改造 隐藏url接口 新增动态参数path作为url一部分并作为参数校验
+     */
+    @RequestMapping(value = "/{path}/do_miaosha",method = RequestMethod.POST)
     @ResponseBody
     //将返回类型从Result<OrderInfo> 变成 Result<Integer>  返回状态（1：表示排队中）
-    public Result<Integer> miaosha(Model model, User user, @RequestParam("goodsId") long goodsId){
+    public Result<Integer> miaosha(Model model, User user, @RequestParam("goodsId") long goodsId
+            , @PathVariable("path") String path){
         if (user == null){
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+        /*
+        V3.0验证path
+         */
+        boolean check = miaoshaService.checkPath(user,goodsId,path);
+        if (!check){
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+        }
+
+
 
         /*
         V1.0 直接在数据库里边对数量进行判断
@@ -143,4 +162,57 @@ public class MiaoshaController implements InitializingBean {
         return Result.success(result);
     }
 
+
+    /**
+     * 获得秒杀url中的动态参数（路径）path
+     * @param model
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/getpath",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getPath(Model model, User user,@RequestParam("goodsId") long goodsId,
+                                  @RequestParam("verifyCode") int verifyCode){
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        //验证验证码
+        boolean check = miaoshaService.checkVerifyCode(user,goodsId,verifyCode);
+        if (!check){
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+        }
+        //用户每次访问都会随机生成一个uuid作为参数返回给用户并保存在redis中，以便后续访问真的秒杀路径时验证参数
+        String path = MD5Util.md5(UUIDUtil.uuid() + "13579");
+        redisService.set(MiaoshaKey.getMiaoshaPath,""+user.getId()+"_"+goodsId,path);
+        return Result.success(path);
+    }
+
+
+    /**
+     * 生成数学公式验证码
+     * @param model
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/verifyCode",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getVerifyCode(HttpServletResponse httpServletResponse,Model model, User user, @RequestParam("goodsId") long goodsId){
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        BufferedImage image = miaoshaService.createVerifyCode(user, goodsId);
+        try{
+            //将图片返回到前端,将图片差到前端对应位置
+            OutputStream outputStream = httpServletResponse.getOutputStream();
+            ImageIO.write(image,"JPEG",outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        return null;
+    }
 }
